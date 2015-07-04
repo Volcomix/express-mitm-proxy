@@ -1,0 +1,36 @@
+{
+  "name": "express-mitm-proxy",
+  "version": "0.0.1",
+  "description": "\"Man In The Middle\" Proxy which can be used with Express",
+  "main": "build/src/MitmProxy.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Volcomix/express-mitm-proxy.git"
+  },
+  "keywords": [
+    "MITM",
+    "Proxy",
+    "Express",
+    "Middleware"
+  ],
+  "author": "Volcomix",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Volcomix/express-mitm-proxy/issues"
+  },
+  "homepage": "https://github.com/Volcomix/express-mitm-proxy#readme",
+  "dependencies": {
+    "express": "^4.13.0",
+    "q": "^1.4.1",
+    "request": "^2.58.0"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.1.2",
+    "gulp-typescript": "^2.7.8"
+  }
+}
