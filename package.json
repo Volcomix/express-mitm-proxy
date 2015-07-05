@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Volcomix/express-mitm-proxy#readme",
   "dependencies": {
+    "certificate-authority": "git+https://github.com/Volcomix/certificate-authority.git",
     "express": "^4.13.0",
     "q": "^1.4.1",
     "request": "^2.58.0"

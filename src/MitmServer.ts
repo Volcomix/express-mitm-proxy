@@ -1,5 +1,4 @@
-/// <reference path="../typings/node/node.d.ts"/>
-/// <reference path="../typings/q/Q.d.ts"/>
+/// <reference path="../typings/tsd.d.ts"/>
 
 import https = require('https');
 import tls = require('tls');
@@ -7,7 +6,7 @@ import util = require('util');
 
 import Q = require('q');
 
-import CA = require('./CertificateAuthority');
+import CA = require('certificate-authority');
 
 class MitmServer {
 

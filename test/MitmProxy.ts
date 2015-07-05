@@ -1,8 +1,4 @@
-/// <reference path="../typings/node/node.d.ts"/>
-/// <reference path="../typings/mocha/mocha.d.ts"/>
-/// <reference path="../typings/chai/chai.d.ts"/>
-/// <reference path="../typings/q/Q.d.ts"/>
-/// <reference path="../typings/request/request.d.ts"/>
+/// <reference path="../typings/tsd.d.ts"/>
 
 import http = require('http');
 import fs = require('fs');
@@ -11,7 +7,7 @@ var should = require('chai').should();
 import Q = require('q');
 import request = require('request');
 
-import CA = require('../src/CertificateAuthority');
+import CA = require('certificate-authority');
 import MitmProxy = require('../src/MitmProxy');
 
 describe('MitmProxy', function() {

@@ -1,6 +1,4 @@
-/// <reference path="typings/gulp/gulp.d.ts"/>
-/// <reference path="typings/gulp-typescript/gulp-typescript.d.ts"/>
-/// <reference path="typings/gulp-mocha/gulp-mocha.d.ts" />
+/// <reference path="typings/tsd.d.ts" />
 
 var gulp = require('gulp');
 var tsc = require('gulp-typescript');
@@ -22,6 +20,5 @@ gulp.task('build:test', function () {
 
 gulp.task('test', ['build:test'], function () {
 	return gulp.src('build/test/**/*.js')
-		.pipe(mocha())
-		.once('error', function () { process.exit(1); });
+		.pipe(mocha());
 });

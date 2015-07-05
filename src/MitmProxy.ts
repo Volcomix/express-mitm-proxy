@@ -1,7 +1,4 @@
-/// <reference path="../typings/node/node.d.ts"/>
-/// <reference path="../typings/express/express.d.ts"/>
-/// <reference path="../typings/request/request.d.ts"/>
-/// <reference path="../typings/q/Q.d.ts"/>
+/// <reference path="../typings/tsd.d.ts"/>
 
 import url = require('url');
 
@@ -9,7 +6,7 @@ import express = require('express');
 import request = require('request');
 import Q = require('q');
 
-import CA = require('./CertificateAuthority');
+import CA = require('certificate-authority');
 import MitmServer = require('./MitmServer');
 import ProxyServer = require('./ProxyServer');
 
