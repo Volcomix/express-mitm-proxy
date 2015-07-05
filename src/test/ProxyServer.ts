@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts"/>
+/// <reference path="../../typings/tsd.d.ts"/>
 
 import net = require('net');
 import http = require('http');
@@ -9,8 +9,8 @@ import Q = require('q');
 import request = require('request');
 
 import CA = require('certificate-authority');
-import MitmServer = require('../src/MitmServer');
-import ProxyServer = require('../src/ProxyServer');
+import MitmServer = require('../MitmServer');
+import ProxyServer = require('../ProxyServer');
 
 describe('ProxyServer', function() {
 	var ca: CA;

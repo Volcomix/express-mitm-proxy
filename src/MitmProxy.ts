@@ -1,6 +1,7 @@
 /// <reference path="../typings/tsd.d.ts"/>
 
 import url = require('url');
+import http = require('http');
 
 import express = require('express');
 import request = require('request');
@@ -15,7 +16,7 @@ class MitmProxy {
 	private mitmServer: MitmServer;
 	private proxyServer: ProxyServer;
 
-	get server() {
+	get server(): http.Server {
 		return this.proxyServer.server;
 	}
 
