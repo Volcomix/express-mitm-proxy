@@ -2,7 +2,10 @@
   "name": "express-mitm-proxy",
   "version": "0.0.1",
   "description": "\"Man In The Middle\" Proxy which can be used with Express",
-  "main": "build/src/MitmProxy.js",
+  "main": "release/MitmProxy.js",
+  "typescript": {
+    "definition": "release/definitions/MitmProxy.d.ts"
+  },
   "scripts": {
     "test": "gulp test"
   },
@@ -34,6 +37,8 @@
     "gulp": "^3.9.0",
     "gulp-mocha": "^2.1.2",
     "gulp-typescript": "^2.7.8",
-    "merge2": "^0.3.6"
+    "merge2": "^0.3.6",
+    "minimatch": "^2.0.8",
+    "through2": "^2.0.0"
   }
 }

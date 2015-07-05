@@ -49,6 +49,9 @@
     },
     "minimatch/minimatch.d.ts": {
       "commit": "625cd68fed45e3230393af71bcde1d36706f3d56"
+    },
+    "through2/through2.d.ts": {
+      "commit": "625cd68fed45e3230393af71bcde1d36706f3d56"
     }
   }
 }
