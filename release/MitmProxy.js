@@ -1,5 +1,6 @@
 /// <reference path="../typings/tsd.d.ts"/>
 var url = require('url');
+var stream = require('stream');
 var express = require('express');
 var request = require('request');
 var Q = require('q');
@@ -32,9 +33,13 @@ var MitmProxy = (function () {
         configurable: true
     });
     MitmProxy.prototype.proxy = function (req, res, next) {
-        req.pipe(request(req.url, { followRedirect: false }, function () {
+        var passThrough = new stream.PassThrough();
+        var proxiedRequest = req.pipe(request(req.url, { followRedirect: false }, function () {
             next();
-        })).pipe(res);
+        }));
+        proxiedRequest.pipe(passThrough);
+        proxiedRequest.pipe(res);
+        return passThrough;
     };
     MitmProxy.prototype.listen = function (proxyPort, mitmPort, listeningListener) {
         var _this = this;

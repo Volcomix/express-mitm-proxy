@@ -2,6 +2,7 @@
 
 import url = require('url');
 import http = require('http');
+import stream = require('stream');
 
 import express = require('express');
 import request = require('request');
@@ -45,9 +46,13 @@ class MitmProxy {
 	}
 
 	proxy(req: express.Request, res: express.Response, next: Function) {
-		req.pipe(request(req.url, { followRedirect: false }, () => {
+		var passThrough = new stream.PassThrough();
+		var proxiedRequest = req.pipe(request(req.url, { followRedirect: false }, () => {
 			next();
-		})).pipe(res);
+		}));
+		proxiedRequest.pipe(passThrough);
+		proxiedRequest.pipe(res);
+		return passThrough;
 	}
 
 	listen(proxyPort = 3128, mitmPort = 3129, listeningListener?: () => void): MitmProxy {
