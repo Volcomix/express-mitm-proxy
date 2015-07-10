@@ -2,31 +2,12 @@
 
 var gulp = require('gulp');
 var tsc = require('gulp-typescript');
+var ambientTypescript = require('gulp-ambient-typescript');
 var mocha = require('gulp-mocha');
 var merge = require('merge2');
 var del = require('del');
-var through2 = require('through2');
-var minimatch = require('minimatch');
 
 var tsProject = tsc.createProject('tsconfig.json');
-
-function ambientModule(moduleName) {
-	return through2.obj(function (chunk, enc, callback) {
-		if (minimatch(chunk.relative, 'MitmProxy.d.ts')) {
-			chunk.contents = new Buffer(
-				chunk.contents.toString()
-					.replace(/declare /g, '')
-					.replace(/(.*)/g, '    $1')
-					.replace(
-					/^\s*\/\/\/\s*<reference[^>]*\/>/,
-					'declare module "' + moduleName + '" {\n')
-				+ "\n}");
-
-			this.push(chunk);
-		}
-		callback();
-	});
-}
 
 gulp.task('clean', function (cb) {
 	del('release', cb);
@@ -38,7 +19,7 @@ gulp.task('build:js', function () {
 	return merge([
 		tscResult.js.pipe(gulp.dest('release')),
 		tscResult.dts
-			.pipe(ambientModule('express-mitm-proxy'))
+			.pipe(ambientTypescript('MitmProxy.d.ts', 'express-mitm-proxy'))
 			.pipe(gulp.dest('release/definitions'))
 	]);
 });
@@ -56,7 +37,7 @@ gulp.task('build', ['clean'], function () {
 	return merge([
 		tscResult.js.pipe(gulp.dest('release')),
 		tscResult.dts
-			.pipe(ambientModule('express-mitm-proxy'))
+			.pipe(ambientTypescript('MitmProxy.d.ts', 'express-mitm-proxy'))
 			.pipe(gulp.dest('release/definitions'))
 	]);
 });

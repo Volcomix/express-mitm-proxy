@@ -35,10 +35,9 @@
     "chai": "^3.0.0",
     "del": "^1.2.0",
     "gulp": "^3.9.0",
+    "gulp-ambient-typescript": "git+https://github.com/Volcomix/gulp-ambient-typescript.git",
     "gulp-mocha": "^2.1.2",
     "gulp-typescript": "^2.7.8",
-    "merge2": "^0.3.6",
-    "minimatch": "^2.0.8",
-    "through2": "^2.0.0"
+    "merge2": "^0.3.6"
   }
 }
