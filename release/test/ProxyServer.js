@@ -16,14 +16,14 @@ describe('ProxyServer', function () {
         mitmServer = new MitmServer(function (request, response) {
             response.writeHead(200, { 'Content-Type': 'text/plain' });
             response.end('MitmServer OK');
-        }, ca).listen(13130, done);
+        }, ca).listen(13130, 'localhost', done);
     });
     describe('#listen()', function () {
         it('should start', function (done) {
             proxyServer = new ProxyServer(function (request, response) {
                 response.writeHead(200, { 'Content-Type': 'text/plain' });
                 response.end('ProxyServer OK');
-            }, mitmServer).listen(13131, done);
+            }, mitmServer).listen(13131, 'localhost', done);
         });
         it('should be listening', function (done) {
             proxyServer.address.port.should.be.equal(13131);
@@ -62,9 +62,7 @@ describe('ProxyServer', function () {
                 client.end();
                 done(new Error('ProxyServer is still listening on port 13131'));
             });
-            client.on('error', function () {
-                done();
-            });
+            client.on('error', function () { done(); });
         });
     });
     after(function () {

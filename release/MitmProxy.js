@@ -7,7 +7,8 @@ var Q = require('q');
 var MitmServer = require('./MitmServer');
 var ProxyServer = require('./ProxyServer');
 var MitmProxy = (function () {
-    function MitmProxy(app, ca, verbose, proxyVerbose, mitmVerbose) {
+    function MitmProxy(app, targetHost, ca, verbose, proxyVerbose, mitmVerbose) {
+        this.targetHost = targetHost;
         this.verbose = verbose;
         var externalApp = !!app;
         if (!externalApp) {
@@ -20,7 +21,7 @@ var MitmProxy = (function () {
             next();
         });
         if (!externalApp) {
-            app.use(this.proxy);
+            app.use(this.proxy.bind(this));
         }
         this.mitmServer = new MitmServer(app, ca, mitmVerbose);
         this.proxyServer = new ProxyServer(app, this.mitmServer, proxyVerbose);
@@ -33,8 +34,15 @@ var MitmProxy = (function () {
         configurable: true
     });
     MitmProxy.prototype.proxy = function (req, res, next) {
+        var targetUrl;
+        if (this.targetHost) {
+            targetUrl = url.resolve(req.protocol + '://' + this.targetHost, req.originalUrl);
+        }
+        else {
+            targetUrl = req.url;
+        }
         var passThrough = new stream.PassThrough();
-        var proxiedRequest = req.pipe(request(req.url, { followRedirect: false }, function () {
+        var proxiedRequest = req.pipe(request(targetUrl, { followRedirect: false }, function () {
             next();
         }));
         proxiedRequest.pipe(passThrough);
@@ -47,7 +55,7 @@ var MitmProxy = (function () {
         if (mitmPort === void 0) { mitmPort = 3129; }
         Q.all([
             Q.Promise(function (resolve) {
-                _this.mitmServer.listen(mitmPort, function () {
+                _this.mitmServer.listen(mitmPort, 'localhost', function () {
                     var host = _this.mitmServer.address.address;
                     var port = _this.mitmServer.address.port;
                     if (_this.verbose) {
@@ -57,7 +65,7 @@ var MitmProxy = (function () {
                 });
             }),
             Q.Promise(function (resolve) {
-                _this.proxyServer.listen(proxyPort, function () {
+                _this.proxyServer.listen(proxyPort, 'localhost', function () {
                     var host = _this.proxyServer.address.address;
                     var port = _this.proxyServer.address.port;
                     if (_this.verbose) {

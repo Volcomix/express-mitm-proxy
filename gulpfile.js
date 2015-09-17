@@ -44,5 +44,5 @@ gulp.task('build', ['clean'], function () {
 
 gulp.task('test', ['build'], function () {
 	return gulp.src('release/test/**/*.js')
-		.pipe(mocha());
+		.pipe(mocha({timeout: 10000}));
 });

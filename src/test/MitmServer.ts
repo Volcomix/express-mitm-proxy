@@ -23,7 +23,7 @@ describe('MitmServer', function() {
 			mitmServer = new MitmServer(function(request, response) {
 				response.writeHead(200, { 'Content-Type': 'text/plain' });
 				response.end('OK');
-			}, ca).listen(13129, done);
+			}, ca).listen(13129, 'localhost', done);
 		});
 		it('should be listening', function(done) {
 			mitmServer.address.port.should.be.equal(13129);
@@ -36,7 +36,8 @@ describe('MitmServer', function() {
 		it('should serve with self signed certificate', function() {
 			return ca.caCertificate.then(function(caCert) {
 				return Q.nfcall(request, 'https://localhost:13129', {
-					ca: caCert.certificate
+					ca: caCert.certificate,
+					proxy: null
 				});
 			}).spread(function(response: http.IncomingMessage, body: any) {
 				response.statusCode.should.be.equal(200);

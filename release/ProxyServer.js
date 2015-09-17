@@ -35,7 +35,8 @@ var ProxyServer = (function () {
                 console.log('Piping to MITM server: ' + req.url);
             }
             var mitmSocket = net.connect(_this.mitmServer.address.port, _this.mitmServer.address.address, function () {
-                cltSocket.write('HTTP/1.1 200 Connection Established\r\n' + '\r\n');
+                cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
+                    '\r\n');
                 mitmSocket.write(head);
                 mitmSocket.pipe(cltSocket);
                 cltSocket.pipe(mitmSocket);

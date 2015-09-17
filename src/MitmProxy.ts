@@ -21,7 +21,7 @@ class MitmProxy {
 		return this.proxyServer.server;
 	}
 
-	constructor(app?: express.Express, ca?: CA,
+	constructor(app?: express.Express, private targetHost?: string, ca?: CA,
 		private verbose?: boolean, proxyVerbose?: boolean, mitmVerbose?: boolean) {
 
 		var externalApp = !!app;
@@ -38,7 +38,7 @@ class MitmProxy {
 		});
 
 		if (!externalApp) {
-			app.use(this.proxy);
+			app.use(this.proxy.bind(this));
 		}
 
 		this.mitmServer = new MitmServer(app, ca, mitmVerbose);
@@ -46,8 +46,15 @@ class MitmProxy {
 	}
 
 	proxy(req: express.Request, res: express.Response, next: Function) {
+		var targetUrl;
+		if (this.targetHost) {
+			targetUrl = url.resolve(req.protocol + '://' + this.targetHost, req.originalUrl);
+		} else {
+			targetUrl = req.url;
+		}
+		
 		var passThrough = new stream.PassThrough();
-		var proxiedRequest = req.pipe(request(req.url, { followRedirect: false }, () => {
+		var proxiedRequest = req.pipe(request(targetUrl, { followRedirect: false }, () => {
 			next();
 		}));
 		proxiedRequest.pipe(passThrough);
@@ -58,7 +65,7 @@ class MitmProxy {
 	listen(proxyPort = 3128, mitmPort = 3129, listeningListener?: () => void): MitmProxy {
 		Q.all([
 			Q.Promise((resolve) => {
-				this.mitmServer.listen(mitmPort, () => {
+				this.mitmServer.listen(mitmPort, 'localhost', () => {
 					var host = this.mitmServer.address.address;
 					var port = this.mitmServer.address.port;
 
@@ -70,7 +77,7 @@ class MitmProxy {
 				});
 			}),
 			Q.Promise((resolve) => {
-				this.proxyServer.listen(proxyPort, () => {
+				this.proxyServer.listen(proxyPort, 'localhost', () => {
 					var host = this.proxyServer.address.address;
 					var port = this.proxyServer.address.port;
 
