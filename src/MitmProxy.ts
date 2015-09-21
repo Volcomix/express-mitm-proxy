@@ -38,14 +38,17 @@ class MitmProxy {
 		});
 
 		if (!externalApp) {
-			app.use(this.proxy.bind(this));
+			app.use((req: express.Request, res: express.Response, next: Function) => {
+				return this.proxy(req, res, next);
+			});
 		}
 
 		this.mitmServer = new MitmServer(app, ca, mitmVerbose);
 		this.proxyServer = new ProxyServer(app, this.mitmServer, proxyVerbose)
 	}
 
-	proxy(req: express.Request, res: express.Response, next: Function) {
+	proxy(req: express.Request, res: express.Response, next: Function,
+		  cb?: (error: any, response: http.IncomingMessage, body: any) => void) {
 		var targetUrl;
 		if (this.targetHost) {
 			targetUrl = url.resolve(req.protocol + '://' + this.targetHost, req.originalUrl);
@@ -54,11 +57,15 @@ class MitmProxy {
 		}
 		
 		var passThrough = new stream.PassThrough();
-		var proxiedRequest = req.pipe(request(targetUrl, { followRedirect: false }, () => {
-			next();
-		}));
+		var proxiedRequest = req.pipe(
+			request(targetUrl, { followRedirect: false }, cb || (() => {
+				next();
+			}))
+		);
 		proxiedRequest.pipe(passThrough);
-		proxiedRequest.pipe(res);
+		if (!cb) {
+			proxiedRequest.pipe(res);
+		}
 		return passThrough;
 	}
 

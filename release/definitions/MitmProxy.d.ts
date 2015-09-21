@@ -11,7 +11,7 @@ declare module "express-mitm-proxy" {
         private proxyServer;    
         server: http.Server;    
         constructor(app?: express.Express, targetHost?: string, ca?: CA, verbose?: boolean, proxyVerbose?: boolean, mitmVerbose?: boolean);    
-        proxy(req: express.Request, res: express.Response, next: Function): stream.PassThrough;    
+        proxy(req: express.Request, res: express.Response, next: Function, cb?: (error: any, response: http.IncomingMessage, body: any) => void): stream.PassThrough;    
         listen(proxyPort?: number, mitmPort?: number, listeningListener?: () => void): MitmProxy;    
         close(listeningListener?: () => void): void;    
     }    

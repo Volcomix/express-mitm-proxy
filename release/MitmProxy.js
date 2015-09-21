@@ -8,6 +8,7 @@ var MitmServer = require('./MitmServer');
 var ProxyServer = require('./ProxyServer');
 var MitmProxy = (function () {
     function MitmProxy(app, targetHost, ca, verbose, proxyVerbose, mitmVerbose) {
+        var _this = this;
         this.targetHost = targetHost;
         this.verbose = verbose;
         var externalApp = !!app;
@@ -21,7 +22,9 @@ var MitmProxy = (function () {
             next();
         });
         if (!externalApp) {
-            app.use(this.proxy.bind(this));
+            app.use(function (req, res, next) {
+                return _this.proxy(req, res, next);
+            });
         }
         this.mitmServer = new MitmServer(app, ca, mitmVerbose);
         this.proxyServer = new ProxyServer(app, this.mitmServer, proxyVerbose);
@@ -33,7 +36,7 @@ var MitmProxy = (function () {
         enumerable: true,
         configurable: true
     });
-    MitmProxy.prototype.proxy = function (req, res, next) {
+    MitmProxy.prototype.proxy = function (req, res, next, cb) {
         var targetUrl;
         if (this.targetHost) {
             targetUrl = url.resolve(req.protocol + '://' + this.targetHost, req.originalUrl);
@@ -42,11 +45,13 @@ var MitmProxy = (function () {
             targetUrl = req.url;
         }
         var passThrough = new stream.PassThrough();
-        var proxiedRequest = req.pipe(request(targetUrl, { followRedirect: false }, function () {
+        var proxiedRequest = req.pipe(request(targetUrl, { followRedirect: false }, cb || (function () {
             next();
-        }));
+        })));
         proxiedRequest.pipe(passThrough);
-        proxiedRequest.pipe(res);
+        if (!cb) {
+            proxiedRequest.pipe(res);
+        }
         return passThrough;
     };
     MitmProxy.prototype.listen = function (proxyPort, mitmPort, listeningListener) {
